@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: pipeline-rakshak-api
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.14"
+      - key: DATABASE_URL
+        sync: false         # Set in Render dashboard — Supabase PostgreSQL pooler URL
+      - key: JWT_SECRET_KEY
+        sync: false         # Long random secret for JWT signing (32+ chars)
+      - key: SUPABASE_URL
+        sync: false         # https://<ref>.supabase.co
+      - key: SUPABASE_SERVICE_KEY
+        sync: false         # Supabase service-role key — keep secret
+      - key: STORAGE_BACKEND
+        value: supabase
+      - key: ALLOWED_ORIGINS
+        sync: false         # JSON array, e.g. ["https://your-app.netlify.app"]
+      - key: MODEL_DIRECTORY
+        value: backend/models/onnx
+      - key: UPLOAD_DIRECTORY
+        value: uploads
+      - key: REPORT_DIRECTORY
+        value: reports
+      - key: DEFAULT_MODEL
+        value: mobilenetv2_standard.onnx
+      - key: LOG_LEVEL
+        value: INFO
+

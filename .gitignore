@@ -1,0 +1,103 @@
+# ============================================================
+# Pipeline Rakshak — .gitignore
+# ============================================================
+
+# ── Secrets & environment files ─────────────────────────────
+.env
+.env.local
+.env.production
+.env.staging
+.env.*.local
+*.env
+
+# ── Python virtual environments ──────────────────────────────
+venv/
+.venv/
+.venv311/
+env/
+ENV/
+
+# ── Python cache / build artefacts ──────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# ── Test & coverage caches ───────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ── Node / frontend ──────────────────────────────────────────
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+frontend/.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── ML model weights & checkpoints ──────────────────────────
+*.pth
+*.pt
+*.onnx
+*.onnx.data
+*.onnx.bak
+*.onnx.tmp
+backend/models/checkpoints/
+backend/models/exports/
+backend/models/evaluation/
+saved_models/
+outputs/
+
+# ── Databases ────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+corrosion_detection.db
+
+# ── Runtime / generated directories ─────────────────────────
+uploads/
+reports/
+plots/
+logs/
+backend/logs/
+backend/datasets/retraining/
+
+# ── Log & temp files ─────────────────────────────────────────
+*.log
+*.tmp
+*.bak
+uvicorn_out.txt
+uvicorn_err.txt
+
+# ── OS & editor artefacts ────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ── Alembic — keep versions, ignore compiled __pycache__ ────
+alembic/__pycache__/
+alembic/versions/__pycache__/
+
+# ── Docker build cache ───────────────────────────────────────
+.dockerignore

@@ -1,0 +1,17 @@
+{
+  "default": {
+    "labels": ["corrosion", "no_corrosion"],
+    "description": "Verified training order from the project issue: index 0 = corrosion, index 1 = no_corrosion."
+  },
+  "models": {
+    "efficientnetb0_augmented": {
+      "labels": ["corrosion", "no_corrosion"]
+    },
+    "mobilenetv2_standard": {
+      "labels": ["corrosion", "no_corrosion"]
+    },
+    "resnet50_augmented": {
+      "labels": ["corrosion", "no_corrosion"]
+    }
+  }
+}

@@ -1,0 +1,531 @@
+/* ═══════════════════════════════════════════════════════
+   Settings Page CSS  –  prefix: .sett-
+   Dark industrial SaaS — blue / multi-accent
+   ═══════════════════════════════════════════════════════ */
+
+.sett-page {
+  padding: 28px 32px 60px;
+  min-height: 100vh;
+  background: #060e1a;
+  color: #f1f5f9;
+  font-family: system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
+}
+
+/* ── Hero ─────────────────────────────────────────────── */
+.sett-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 22px;
+  padding: 28px 32px;
+  background: linear-gradient(160deg, rgba(59,130,246,0.07) 0%, rgba(139,92,246,0.04) 40%, rgba(6,14,26,0) 70%);
+  border: 1px solid rgba(59,130,246,0.15);
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.sett-hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; left: -60px;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.sett-hero-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+.sett-hero-icon {
+  width: 48px; height: 48px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1.3rem;
+  box-shadow: 0 0 20px rgba(59,130,246,0.35);
+  flex-shrink: 0;
+}
+.sett-hero-eyebrow {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: #60a5fa; font-weight: 600; margin: 0 0 3px;
+}
+.sett-hero-title {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, #93c5fd 50%, #818cf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+.sett-hero-subtitle {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 0.87rem;
+}
+.sett-hero-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+.sett-saved-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border-radius: 999px;
+  background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25);
+  color: #34d399; font-size: 0.75rem; font-weight: 600;
+}
+
+/* ── Unsaved banner ───────────────────────────────────── */
+.sett-unsaved-banner {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; border-radius: 10px;
+  background: rgba(245,158,11,0.09); border: 1px solid rgba(245,158,11,0.22);
+  color: #fbbf24; font-size: 0.82rem; font-weight: 500;
+  margin-bottom: 18px;
+}
+
+/* ── Tab bar ──────────────────────────────────────────── */
+.sett-tabs {
+  display: flex;
+  gap: 2px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 5px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+}
+.sett-tab {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 15px; border-radius: 9px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #64748b; font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: all 0.18s ease;
+  position: relative; white-space: nowrap;
+}
+.sett-tab:hover:not(.active) {
+  background: rgba(255,255,255,0.05);
+  color: #94a3b8;
+}
+.sett-tab.active { font-weight: 700; }
+.sett-tab-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #f59e0b; flex-shrink: 0;
+  animation: sett-pulse-dot 1.5s ease infinite;
+}
+@keyframes sett-pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
+/* ── Card ─────────────────────────────────────────────── */
+.sett-card {
+  background: linear-gradient(155deg, rgba(13,26,47,0.97), rgba(15,31,55,0.92));
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.sett-card:hover {
+  border-color: rgba(59,130,246,0.14);
+  box-shadow: 0 6px 24px rgba(59,130,246,0.05);
+}
+.sett-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.sett-card-header-left {
+  display: flex; align-items: center; gap: 12px;
+}
+.sett-card-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; flex-shrink: 0;
+}
+.sett-card-title   { font-size: 0.92rem; font-weight: 700; color: #e2e8f0; margin: 0; }
+.sett-card-subtitle { font-size: 0.76rem; color: #475569; margin: 2px 0 0; }
+.sett-card-body { padding: 20px 22px; }
+.sett-card-footer {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 22px 18px; flex-wrap: wrap;
+}
+
+/* ── Form grid ────────────────────────────────────────── */
+.sett-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 24px;
+}
+@media (max-width: 760px) {
+  .sett-grid-2 { grid-template-columns: 1fr; }
+}
+
+/* ── Field ────────────────────────────────────────────── */
+.sett-field { margin-bottom: 18px; }
+.sett-label {
+  display: block;
+  font-size: 0.75rem; font-weight: 700;
+  color: #64748b; margin-bottom: 6px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.sett-help {
+  display: block;
+  font-size: 0.74rem; color: #475569;
+  margin-top: 5px; line-height: 1.45;
+}
+.sett-readonly-val {
+  padding: 9px 12px; border-radius: 9px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.05);
+  color: #64748b; font-size: 0.87rem;
+  font-family: 'Courier New', monospace;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* ── Input ────────────────────────────────────────────── */
+.sett-input {
+  width: 100%; box-sizing: border-box;
+  background: rgba(15,31,51,0.8);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 9px; padding: 9px 12px;
+  color: #e2e8f0; font-size: 0.87rem;
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+.sett-input:focus {
+  border-color: rgba(59,130,246,0.5);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+.sett-input:disabled {
+  opacity: 0.45; cursor: not-allowed;
+  background: rgba(255,255,255,0.02);
+}
+.sett-input::placeholder { color: #334155; }
+
+/* ── Select ───────────────────────────────────────────── */
+.sett-select {
+  width: 100%; box-sizing: border-box;
+  background: rgba(15,31,51,0.8);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 9px; padding: 9px 12px;
+  color: #e2e8f0; font-size: 0.87rem;
+  outline: none; cursor: pointer;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 34px;
+  font-family: inherit;
+}
+.sett-select:focus {
+  border-color: rgba(59,130,246,0.5);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+.sett-select option { background: #0d1a2f; color: #e2e8f0; }
+
+/* ── Toggle ───────────────────────────────────────────── */
+.sett-toggle-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.sett-toggle-row:hover { background: rgba(255,255,255,0.015); }
+.sett-toggle-row:last-child { border-bottom: none; padding-bottom: 4px; }
+.sett-toggle-info { flex: 1; min-width: 0; }
+.sett-toggle-label {
+  font-size: 0.87rem; font-weight: 600; color: #e2e8f0; margin: 0 0 3px;
+}
+.sett-toggle-desc { font-size: 0.75rem; color: #475569; margin: 0; line-height: 1.4; }
+.sett-toggle {
+  flex-shrink: 0;
+  width: 42px; height: 24px; border-radius: 12px;
+  position: relative;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: background 0.2s, border-color 0.2s;
+  margin-top: 2px;
+}
+.sett-toggle.on { background: #3b82f6; border-color: #3b82f6; }
+.sett-toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; transition: transform 0.2s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.sett-toggle.on .sett-toggle-thumb { transform: translateX(18px); }
+
+/* ── Buttons ──────────────────────────────────────────── */
+.sett-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 18px; border-radius: 9px; border: none;
+  font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  transition: all 0.18s ease; white-space: nowrap;
+  font-family: inherit;
+}
+.sett-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.sett-btn.primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff; box-shadow: 0 2px 12px rgba(59,130,246,0.3);
+}
+.sett-btn.primary:hover:not(:disabled) {
+  box-shadow: 0 4px 20px rgba(59,130,246,0.45); transform: translateY(-1px);
+}
+.sett-btn.success {
+  background: linear-gradient(135deg, #10b981, #059669); color: #fff;
+}
+.sett-btn.success:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+.sett-btn.danger {
+  background: rgba(239,68,68,0.1); color: #f87171;
+  border: 1px solid rgba(239,68,68,0.25);
+}
+.sett-btn.danger:hover:not(:disabled) { background: rgba(239,68,68,0.18); }
+.sett-btn.ghost {
+  background: rgba(255,255,255,0.04); color: #94a3b8;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.sett-btn.ghost:hover:not(:disabled) { background: rgba(255,255,255,0.09); color: #e2e8f0; }
+.sett-btn.sm { padding: 6px 12px; font-size: 0.77rem; gap: 5px; }
+.sett-btn.spinning svg { animation: sett-spin 1s linear infinite; }
+@keyframes sett-spin { to { transform: rotate(360deg); } }
+
+/* ── Warning / note bars ──────────────────────────────── */
+.sett-warn {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 14px; border-radius: 9px;
+  background: rgba(239,68,68,0.07);
+  border: 1px solid rgba(239,68,68,0.2);
+  color: #fca5a5; font-size: 0.78rem;
+  margin-bottom: 16px; line-height: 1.5;
+}
+.sett-note {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 14px; border-radius: 9px;
+  background: rgba(59,130,246,0.07);
+  border: 1px solid rgba(59,130,246,0.18);
+  color: #93c5fd; font-size: 0.78rem;
+  margin-bottom: 16px; line-height: 1.5;
+}
+
+/* ── Threshold pills ──────────────────────────────────── */
+.sett-threshold-pills {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.sett-pill {
+  padding: 7px 15px; border-radius: 8px;
+  font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03);
+  color: #64748b; transition: all 0.15s;
+}
+.sett-pill.active-pill {
+  background: rgba(139,92,246,0.14);
+  border-color: rgba(139,92,246,0.38);
+  color: #a78bfa;
+}
+.sett-pill:hover:not(.active-pill) {
+  background: rgba(255,255,255,0.06);
+  color: #94a3b8;
+}
+
+/* ── Slider ───────────────────────────────────────────── */
+.sett-slider-wrap {
+  display: flex; align-items: center; gap: 12px; margin-top: 4px;
+}
+.sett-slider {
+  flex: 1; -webkit-appearance: none; height: 5px;
+  border-radius: 3px; background: rgba(255,255,255,0.1);
+  outline: none; cursor: pointer;
+}
+.sett-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 18px; height: 18px;
+  border-radius: 50%; background: #8b5cf6; cursor: pointer;
+  box-shadow: 0 0 10px rgba(139,92,246,0.5);
+  transition: transform 0.15s;
+}
+.sett-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.sett-slider::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #8b5cf6; border: none;
+  box-shadow: 0 0 10px rgba(139,92,246,0.5);
+}
+.sett-slider-val {
+  font-size: 0.9rem; font-weight: 700;
+  color: #a78bfa; min-width: 46px; text-align: right;
+}
+
+/* ── User management table ────────────────────────────── */
+.sett-table-wrap { overflow-x: auto; }
+.sett-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.sett-table thead th {
+  padding: 10px 12px;
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; color: #334155;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  text-align: left; white-space: nowrap;
+}
+.sett-table tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.15s;
+}
+.sett-table tbody tr:hover { background: rgba(59,130,246,0.04); }
+.sett-table td { padding: 11px 12px; color: #94a3b8; vertical-align: middle; }
+.sett-table .col-name { color: #e2e8f0; font-weight: 600; }
+.sett-table .col-actions { text-align: right; }
+
+/* ── Role badge ───────────────────────────────────────── */
+.sett-role-badge {
+  display: inline-flex; align-items: center;
+  padding: 2px 9px; border-radius: 999px;
+  font-size: 0.71rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.sett-role-admin    { background: rgba(245,158,11,0.14); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+.sett-role-operator { background: rgba(59,130,246,0.14);  color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+.sett-role-viewer   { background: rgba(16,185,129,0.14);  color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+
+/* ── Status indicator ─────────────────────────────────── */
+.sett-status {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.78rem; font-weight: 600;
+}
+.sett-status-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.sett-status-dot.green { background: #10b981; box-shadow: 0 0 5px #10b981; }
+.sett-status-dot.red   { background: #ef4444; box-shadow: 0 0 5px #ef4444; }
+
+/* ── System info tiles ────────────────────────────────── */
+.sett-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.sett-info-tile {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 11px; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 5px;
+  transition: border-color 0.2s;
+}
+.sett-info-tile:hover { border-color: rgba(255,255,255,0.11); }
+.sett-info-tile-label {
+  font-size: 0.7rem; color: #475569;
+  text-transform: uppercase; letter-spacing: 0.07em;
+}
+.sett-info-tile-val {
+  font-size: 0.9rem; font-weight: 700; color: #e2e8f0;
+  font-family: 'Courier New', monospace;
+  display: flex; align-items: center; gap: 7px;
+}
+.sett-info-tile-val.green { color: #34d399; }
+.sett-info-tile-val.red   { color: #f87171; }
+
+/* ── Backup action buttons ────────────────────────────── */
+.sett-backup-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+}
+.sett-backup-btn {
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: 8px; padding: 16px 18px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px; cursor: pointer; text-align: left;
+  transition: all 0.2s;
+}
+.sett-backup-btn:hover:not(:disabled) {
+  border-color: rgba(255,255,255,0.13);
+  background: rgba(255,255,255,0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+.sett-backup-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.sett-backup-btn-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+.sett-backup-btn-title { font-size: 0.87rem; font-weight: 700; color: #e2e8f0; }
+.sett-backup-btn-desc  { font-size: 0.74rem; color: #475569; line-height: 1.3; }
+
+/* ── Modal ────────────────────────────────────────────── */
+.sett-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px); display: flex;
+  align-items: center; justify-content: center;
+  z-index: 1000; padding: 20px;
+}
+.sett-modal {
+  background: linear-gradient(155deg, #0d1a2f, #0f1f37);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px; width: 100%; max-width: 460px;
+  max-height: 85vh; overflow-y: auto; padding: 26px;
+}
+.sett-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 22px;
+}
+.sett-modal-title { font-size: 1rem; font-weight: 700; color: #e2e8f0; margin: 0; }
+.sett-modal-close {
+  background: none; border: none; color: #475569;
+  cursor: pointer; padding: 4px; border-radius: 6px; transition: color 0.15s;
+}
+.sett-modal-close:hover { color: #e2e8f0; }
+.sett-modal-footer {
+  display: flex; gap: 10px; margin-top: 20px;
+}
+.sett-modal-footer .sett-btn { flex: 1; justify-content: center; }
+
+/* ── Skeleton ─────────────────────────────────────────── */
+.sett-skel {
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  position: relative; overflow: hidden;
+}
+.sett-skel::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+  animation: sett-shimmer 1.4s infinite;
+}
+@keyframes sett-shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+/* ── Access denied ────────────────────────────────────── */
+.sett-access-denied {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 40px 20px; text-align: center; color: #334155;
+}
+.sett-access-denied p { margin: 10px 0 0; font-size: 0.87rem; }
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 960px) {
+  .sett-page  { padding: 18px 16px 48px; }
+  .sett-hero  { padding: 20px 18px; }
+  .sett-card-body   { padding: 16px; }
+  .sett-card-footer { padding: 10px 16px 16px; }
+  .sett-tab   { padding: 7px 11px; font-size: 0.77rem; }
+}
+@media (max-width: 640px) {
+  .sett-hero-title   { font-size: 1.3rem; }
+  .sett-backup-grid  { grid-template-columns: 1fr 1fr; }
+  .sett-info-grid    { grid-template-columns: 1fr 1fr; }
+  .sett-tab          { padding: 6px 9px; font-size: 0.74rem; }
+}

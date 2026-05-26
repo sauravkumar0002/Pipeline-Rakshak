@@ -1,0 +1,15 @@
+# netlify.toml — Netlify deployment configuration for Pipeline Rakshak frontend
+
+[build]
+  base    = "frontend"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA routing — redirect all requests to index.html
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200

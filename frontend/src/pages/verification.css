@@ -1,0 +1,996 @@
+/* ============================================================
+   VERIFICATION CENTER — Premium UI Styles
+   ============================================================ */
+
+/* ── PAGE ─────────────────────────────────────────────────── */
+.veri-page {
+  padding: 0 0 60px;
+}
+
+/* ── HERO ─────────────────────────────────────────────────── */
+.veri-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0d1f3c 0%, #0a1628 55%, #11102a 100%);
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  border-radius: 18px;
+  padding: 32px 36px 28px;
+  margin-bottom: 24px;
+}
+.veri-hero-glow {
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.veri-hero-glow-right {
+  position: absolute;
+  bottom: -60px;
+  right: -40px;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.veri-hero-eyebrow {
+  font-size: 0.72rem;
+  color: #3b82f6;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+.veri-hero-title {
+  margin: 0 0 8px;
+  font-size: 2.1rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 0%, #93c5fd 60%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+.veri-hero-subtitle {
+  margin: 0 0 24px;
+  color: #64748b;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* ── STAT GRID ────────────────────────────────────────────── */
+.veri-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+  gap: 14px;
+  position: relative;
+}
+.veri-stat-skeleton {
+  background: linear-gradient(145deg, rgba(15, 31, 51, 0.95), rgba(22, 40, 62, 0.88));
+  border-radius: 14px;
+  height: 110px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+.veri-stat-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.04) 50%, transparent 100%);
+  animation: veri-shimmer 1.6s ease-in-out infinite;
+}
+
+/* ── CONTROLS ─────────────────────────────────────────────── */
+.veri-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.veri-controls-left {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.veri-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ── SEARCH ───────────────────────────────────────────────── */
+.veri-search-wrap {
+  background: rgba(13, 31, 60, 0.75);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  height: 44px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.veri-search-wrap:focus-within {
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+}
+.veri-search-icon {
+  color: #3b82f6;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.veri-search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #f1f5f9;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+.veri-search-input::placeholder {
+  color: #334155;
+}
+.veri-search-clear {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.24);
+  border-radius: 7px;
+  color: #fca5a5;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 9px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: inherit;
+  transition: background 0.2s, border-color 0.2s;
+}
+.veri-search-clear:hover {
+  background: rgba(239, 68, 68, 0.16);
+  border-color: rgba(239, 68, 68, 0.42);
+}
+
+/* ── FILTER CHIPS ─────────────────────────────────────────── */
+.veri-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+}
+.veri-chip {
+  padding: 5px 13px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #64748b;
+  font-size: 0.77rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.veri-chip:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+.veri-chip.chip-blue {
+  background: rgba(59, 130, 246, 0.16);
+  border-color: rgba(59, 130, 246, 0.48);
+  color: #93c5fd;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.16);
+}
+.veri-chip.chip-red {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.42);
+  color: #fca5a5;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.14);
+}
+.veri-chip.chip-green {
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.38);
+  color: #86efac;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.12);
+}
+.veri-chip.chip-yellow {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.38);
+  color: #fcd34d;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.12);
+}
+.veri-chip.chip-purple {
+  background: rgba(139, 92, 246, 0.12);
+  border-color: rgba(139, 92, 246, 0.38);
+  color: #c4b5fd;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.12);
+}
+
+/* ── REFRESH BUTTON ───────────────────────────────────────── */
+.veri-refresh-btn {
+  height: 36px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9px;
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+.veri-refresh-btn:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+.veri-refresh-btn.spinning svg {
+  animation: veri-spin 0.8s linear infinite;
+}
+
+/* ── QUEUE BAR ────────────────────────────────────────────── */
+.veri-queue-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  color: #475569;
+  font-size: 0.8rem;
+}
+
+/* ── CARD GRID ────────────────────────────────────────────── */
+.veri-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* ── VERIFICATION CARD ────────────────────────────────────── */
+.veri-card {
+  background: linear-gradient(155deg, rgba(13, 26, 47, 0.97) 0%, rgba(15, 31, 55, 0.92) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.veri-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 52px rgba(0, 0, 0, 0.42), 0 0 22px rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.28);
+}
+.veri-card.corr-glow:hover {
+  box-shadow: 0 20px 52px rgba(0, 0, 0, 0.42), 0 0 22px rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.28);
+}
+
+/* ── CARD IMAGE ───────────────────────────────────────────── */
+.veri-card-img-wrap {
+  position: relative;
+  height: 152px;
+  background: #060e1a;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.veri-card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.veri-card-img-wrap:hover img {
+  transform: scale(1.04);
+}
+.veri-card-img-hover {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: background 0.25s, opacity 0.25s;
+}
+.veri-card-img-wrap:hover .veri-card-img-hover {
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 1;
+}
+.veri-card-no-img {
+  width: 100%;
+  height: 152px;
+  background: linear-gradient(135deg, #060e1a, #0d1f3c);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #1e3050;
+}
+
+/* ── CARD BODY ────────────────────────────────────────────── */
+.veri-card-body {
+  padding: 13px 14px 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.veri-card-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.veri-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.veri-card-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #64748b;
+  font-size: 0.77rem;
+}
+.veri-card-meta-label {
+  color: #334155;
+}
+.veri-card-meta-value {
+  color: #94a3b8;
+  font-variant-numeric: tabular-nums;
+}
+.veri-card-model {
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  color: #475569;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.veri-card-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 2px;
+  color: #334155;
+  font-size: 0.7rem;
+}
+.veri-card-id {
+  font-family: 'Courier New', monospace;
+}
+
+/* ── CARD ACTIONS ─────────────────────────────────────────── */
+.veri-card-actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px 13px;
+}
+.veri-quick-btn {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  border: none;
+}
+.veri-quick-btn.confirm {
+  background: rgba(34, 197, 94, 0.13);
+  border: 1px solid rgba(34, 197, 94, 0.32);
+  color: #86efac;
+}
+.veri-quick-btn.confirm:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.22);
+  border-color: rgba(34, 197, 94, 0.5);
+  box-shadow: 0 3px 12px rgba(34, 197, 94, 0.18);
+}
+.veri-quick-btn.confirm:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.veri-quick-btn.review {
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+.veri-quick-btn.review:hover {
+  background: rgba(59, 130, 246, 0.22);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 3px 12px rgba(59, 130, 246, 0.16);
+}
+
+/* ── BADGES ───────────────────────────────────────────────── */
+.veri-pred-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.71rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.veri-pred-badge.corr {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+.veri-pred-badge.healthy {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  color: #86efac;
+}
+.veri-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+.veri-status-badge.pending {
+  background: rgba(245, 158, 11, 0.09);
+  border: 1px solid rgba(245, 158, 11, 0.24);
+  color: #fcd34d;
+}
+.veri-status-badge.verified {
+  background: rgba(34, 197, 94, 0.09);
+  border: 1px solid rgba(34, 197, 94, 0.24);
+  color: #86efac;
+}
+.veri-status-badge.flagged {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+}
+
+/* ── SKELETON CARDS ───────────────────────────────────────── */
+.veri-skel {
+  background: linear-gradient(145deg, rgba(13, 26, 47, 0.97), rgba(15, 31, 55, 0.92));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.veri-skel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.04) 50%, transparent 100%);
+  animation: veri-shimmer 1.6s ease-in-out infinite;
+}
+
+/* ── ERROR BAR ────────────────────────────────────────────── */
+.veri-error {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(127, 42, 42, 0.3);
+  color: #ffb3b3;
+  border: 1px solid rgba(127, 42, 42, 0.5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+}
+.veri-retry-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(127, 42, 42, 0.5);
+  background: transparent;
+  color: #ffb3b3;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-family: inherit;
+}
+.veri-retry-btn:hover {
+  background: rgba(127, 42, 42, 0.3);
+}
+
+/* ── EMPTY STATE ──────────────────────────────────────────── */
+.veri-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  gap: 14px;
+  text-align: center;
+}
+.veri-empty-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.07);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #22c55e;
+}
+.veri-empty-icon-search {
+  background: rgba(59, 130, 246, 0.06);
+  border: 1px solid rgba(59, 130, 246, 0.14);
+  color: #1e3050;
+}
+.veri-empty-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #334155;
+  margin: 0;
+}
+.veri-empty-sub {
+  font-size: 0.87rem;
+  color: #1e3050;
+  max-width: 320px;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ── DRAWER OVERLAY ───────────────────────────────────────── */
+.veri-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+}
+
+/* ── DRAWER ───────────────────────────────────────────────── */
+.veri-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(560px, 100vw);
+  height: 100vh;
+  background: linear-gradient(160deg, #0a1628 0%, #060e1a 100%);
+  border-left: 1px solid rgba(59, 130, 246, 0.22);
+  z-index: 201;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.veri-drawer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  position: sticky;
+  top: 0;
+  background: rgba(10, 22, 40, 0.97);
+  backdrop-filter: blur(12px);
+  z-index: 1;
+}
+.veri-drawer-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0 0 3px;
+}
+.veri-drawer-subtitle {
+  color: #334155;
+  font-size: 0.76rem;
+  font-family: 'Courier New', monospace;
+}
+.veri-drawer-close {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #475569;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+.veri-drawer-close:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+.veri-drawer-body {
+  flex: 1;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.veri-drawer-img-wrap {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #060e1a;
+  cursor: zoom-in;
+  position: relative;
+}
+.veri-drawer-img-wrap img {
+  width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.25s ease;
+}
+.veri-drawer-img-wrap:hover img {
+  transform: scale(1.02);
+}
+.veri-drawer-img-overlay {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 7px;
+  padding: 5px 9px;
+  color: #94a3b8;
+  font-size: 0.72rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+}
+.veri-drawer-no-img {
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #1e3050;
+}
+
+/* ── DRAWER DETAILS ───────────────────────────────────────── */
+.veri-drawer-section-label {
+  color: #475569;
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin: 0 0 10px;
+}
+.veri-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+.veri-detail-cell {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 9px;
+  padding: 10px 13px;
+}
+.veri-detail-label {
+  color: #334155;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+.veri-detail-value {
+  color: #e2e8f0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.veri-recommendation {
+  background: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.16);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.veri-recommendation p {
+  margin: 0;
+  color: #93c5fd;
+  font-size: 0.87rem;
+  line-height: 1.6;
+}
+
+/* ── DECISION PANEL ───────────────────────────────────────── */
+.veri-decision-panel {
+  background: rgba(59, 130, 246, 0.04);
+  border: 1px solid rgba(59, 130, 246, 0.16);
+  border-radius: 13px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.veri-decision-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+.veri-label-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.veri-label-row-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.veri-label-selector {
+  display: flex;
+  gap: 8px;
+}
+.veri-label-btn {
+  flex: 1;
+  padding: 9px;
+  border-radius: 9px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.18s ease;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.veri-label-btn.idle-corr {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: #475569;
+}
+.veri-label-btn.idle-corr:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+.veri-label-btn.idle-healthy {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: #475569;
+}
+.veri-label-btn.idle-healthy:hover {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #86efac;
+}
+.veri-label-btn.sel-corr {
+  background: rgba(239, 68, 68, 0.16);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  color: #fca5a5;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.18);
+}
+.veri-label-btn.sel-healthy {
+  background: rgba(34, 197, 94, 0.14);
+  border: 1px solid rgba(34, 197, 94, 0.42);
+  color: #86efac;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.16);
+}
+.veri-correction-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #f59e0b;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.veri-retrain-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
+}
+.veri-retrain-toggle:hover {
+  background: rgba(245, 158, 11, 0.07);
+  border-color: rgba(245, 158, 11, 0.25);
+}
+.veri-retrain-toggle.active {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.14);
+}
+.veri-retrain-dot {
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+  position: relative;
+  transition: background 0.2s, border-color 0.2s;
+}
+.veri-retrain-dot::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #475569;
+  transition: transform 0.2s, background 0.2s;
+}
+.veri-retrain-toggle.active .veri-retrain-dot {
+  background: rgba(245, 158, 11, 0.25);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+.veri-retrain-toggle.active .veri-retrain-dot::after {
+  transform: translateX(16px);
+  background: #fbbf24;
+}
+.veri-retrain-text {
+  flex: 1;
+}
+.veri-retrain-text-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+.veri-retrain-toggle.active .veri-retrain-text-title {
+  color: #fcd34d;
+}
+.veri-retrain-text-sub {
+  font-size: 0.7rem;
+  color: #334155;
+  margin-top: 1px;
+}
+.veri-decision-actions {
+  display: flex;
+  gap: 9px;
+}
+.veri-submit-btn {
+  flex: 1;
+  padding: 11px 16px;
+  border-radius: 9px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  background: rgba(59, 130, 246, 0.18);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #93c5fd;
+}
+.veri-submit-btn:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.28);
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 4px 18px rgba(59, 130, 246, 0.22);
+}
+.veri-submit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.veri-skip-btn {
+  padding: 11px 16px;
+  border-radius: 9px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #475569;
+}
+.veri-skip-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #64748b;
+}
+
+/* ── FULLSCREEN MODAL ─────────────────────────────────────── */
+.veri-fs-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(8px);
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.veri-fs-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-size: 18px;
+}
+.veri-fs-close:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+.veri-fs-img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ── KEYFRAMES ────────────────────────────────────────────── */
+@keyframes veri-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes veri-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes veri-fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ── RESPONSIVE — Mobile ──────────────────────────────────── */
+@media (max-width: 960px) {
+  .veri-hero { padding: 24px 28px 20px; }
+  .veri-hero-title { font-size: 1.7rem; }
+}
+
+@media (max-width: 640px) {
+  .veri-hero { padding: 18px 20px 16px; border-radius: 14px; }
+  .veri-hero-title { font-size: 1.4rem; }
+  .veri-hero-subtitle { font-size: 0.85rem; }
+  .veri-grid { grid-template-columns: 1fr; }
+}

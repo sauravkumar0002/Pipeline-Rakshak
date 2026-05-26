@@ -1,0 +1,49 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# requirements-training.txt
+#
+# Training-specific dependencies for the AI Corrosion Detection retraining
+# pipeline. Install into the project virtual environment:
+#
+#   .\.venv\Scripts\pip.exe install -r requirements-training.txt
+#
+# PyTorch CPU wheels (Windows). For GPU change the index URL:
+#   CUDA 11.8:  https://download.pytorch.org/whl/cu118
+#   CUDA 12.1:  https://download.pytorch.org/whl/cu121
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ── Deep learning ─────────────────────────────────────────────────────────────
+torch>=2.1.0
+torchvision>=0.16.0
+
+# ── Progress bars (required by trainer.py) ────────────────────────────────────
+tqdm>=4.65.0
+
+# ── Metrics & ML utilities ────────────────────────────────────────────────────
+scikit-learn>=1.3.0
+
+# ── Numerical / data ──────────────────────────────────────────────────────────
+numpy>=1.24.0
+pandas>=2.0.0
+
+# ── Plotting / evaluation reports ─────────────────────────────────────────────
+matplotlib>=3.7.0
+
+# ── Image I/O ─────────────────────────────────────────────────────────────────
+Pillow>=10.0.0
+
+# ── ONNX export & validation ──────────────────────────────────────────────────
+onnx>=1.14.0
+onnxruntime>=1.16.0
+onnxscript>=0.1.0          # required by PyTorch >= 2.5 ONNX exporter
+
+# ── Database (shared with main app — listed here for completeness) ────────────
+SQLAlchemy>=2.0.0
+
+# ── Recommended (not strictly required but useful in production) ──────────────
+# scipy>=1.11.0          # used by scikit-learn internally
+# tensorboard>=2.14.0    # optional training visualisation
+
+# ── Optional GPU support ──────────────────────────────────────────────────────
+# Install GPU wheels instead of the CPU ones above when a CUDA device is present.
+# Example for CUDA 12.1:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
