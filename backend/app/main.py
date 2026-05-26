@@ -348,12 +348,12 @@ app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIRECTORY), name="up
 # Add CORS middleware to allow cross-origin requests
 if settings.ALLOWED_ORIGINS:
     app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.ALLOWED_ORIGINS],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    CORSMiddleware,
+    allow_origin_regex=r"https://.*\.netlify\.app",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # --- API Routers ---
 # Include the routers from the endpoints modules with a common prefix.
