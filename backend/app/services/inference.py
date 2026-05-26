@@ -189,54 +189,92 @@ class ONNXInferenceService:
         """
         return list(self.class_names)
 
+    # All directories to probe for .onnx files, in priority order.
+    # The primary (settings-based) directory is prepended at scan time.
+    _EXTRA_SCAN_DIRS: List[str] = [
+        "backend/models/onnx",
+        "backend/models/exports",
+        "backend/models/checkpoints",
+        "backend/models",
+        "models/onnx",
+        "models",
+    ]
+
     def scan_for_models(self):
         """
-        Scans the model directory for .onnx files and populates the list of available models.
-        """
-        import sys
-        resolved_dir = os.path.abspath(self.model_dir)
-        log.info("[inference] CWD            : %s", os.getcwd())
-        log.info("[inference] Model directory : %s  (resolved → %s)", self.model_dir, resolved_dir)
-        print(f"[inference] CWD            : {os.getcwd()}")
-        print(f"[inference] Model directory : {self.model_dir}  (resolved → {resolved_dir})")
+        Scans multiple candidate directories for .onnx files.
 
-        if not os.path.isdir(self.model_dir):
-            log.warning(
-                "[inference] Model directory not found: %s — no models loaded. "
-                "The directory will be created at startup; models can be added later "
-                "via Supabase Storage auto-download or the /models/select API.",
-                resolved_dir,
-            )
-            print(f"[inference] WARNING: model directory does not exist yet: {resolved_dir}")
-            return
+        Search order:
+          1. self.model_dir  (primary — from settings / constructor arg)
+          2. backend/models/onnx
+          3. backend/models/exports
+          4. backend/models/checkpoints
+          5. backend/models
+          6. models/onnx, models
+
+        The first directory that yields at least one .onnx file wins for
+        the primary model_dir update; models from ALL directories that
+        contain .onnx files are merged into available_models.
+        """
+        cwd = os.getcwd()
+        primary = os.path.abspath(self.model_dir)
+
+        # Build deduplicated search list (primary first, then extras)
+        seen: set[str] = set()
+        search_dirs: List[str] = []
+        for d in [self.model_dir] + self._EXTRA_SCAN_DIRS:
+            abs_d = os.path.abspath(d)
+            if abs_d not in seen:
+                seen.add(abs_d)
+                search_dirs.append(d)
+
+        print(f"[inference] CWD              : {cwd}")
+        print(f"[inference] Primary model dir: {self.model_dir}  (→ {primary})")
+        print(f"[inference] Search paths     : {[os.path.abspath(d) for d in search_dirs]}")
+        log.info("[inference] CWD=%s  primary=%s", cwd, primary)
 
         self.available_models = {}
-        onnx_files = [f for f in os.listdir(self.model_dir) if f.endswith(".onnx")]
 
-        if not onnx_files:
-            log.warning(
-                "[inference] No .onnx files found in %s — inference is not yet available. "
-                "Upload models to the 'model-artifacts' Supabase bucket and they will be "
-                "downloaded automatically on next restart.",
-                resolved_dir,
+        for search_dir in search_dirs:
+            abs_dir = os.path.abspath(search_dir)
+            if not os.path.isdir(search_dir):
+                print(f"[inference]   {abs_dir}: not found")
+                continue
+
+            onnx_files = sorted(f for f in os.listdir(search_dir) if f.endswith(".onnx"))
+            if not onnx_files:
+                print(f"[inference]   {abs_dir}: exists but no .onnx files")
+                continue
+
+            print(f"[inference]   {abs_dir}: found {len(onnx_files)} model(s)")
+            for filename in onnx_files:
+                model_name = os.path.splitext(filename)[0]
+                model_path = os.path.join(search_dir, filename)
+                data_file = model_path + ".data"
+                has_data = os.path.exists(data_file)
+                print(
+                    f"[inference]     {model_name}  "
+                    f"({'with' if has_data else 'NO'} .data)  →  {model_path}"
+                )
+                log.info(
+                    "[inference] Found: %s  path=%s  external_data=%s",
+                    model_name, model_path, has_data,
+                )
+                # Don't overwrite a model already found in a higher-priority dir
+                if model_name not in self.available_models:
+                    self.available_models[model_name] = model_path
+
+        if not self.available_models:
+            print(
+                f"[inference] No .onnx files found in any search path.\n"
+                f"[inference] Auto-download from Supabase 'model-artifacts' will be "
+                f"attempted during lifespan startup."
             )
-            print(f"[inference] WARNING: No .onnx files in {resolved_dir}")
+            log.warning("[inference] No .onnx files found in any of: %s", search_dirs)
             return
 
-        for filename in onnx_files:
-            model_name = os.path.splitext(filename)[0]
-            model_path = os.path.join(self.model_dir, filename)
-            self.available_models[model_name] = model_path
-            data_file = model_path + ".data"
-            has_data = os.path.exists(data_file)
-            log.info(
-                "[inference] Found ONNX model: %s at %s (external data: %s)",
-                model_name, model_path, has_data,
-            )
-            print(f"[inference] Found model: {model_name}  ({model_path})")
-
-        log.info("[inference] Available models: %s", list(self.available_models.keys()))
         print(f"[inference] Available models: {list(self.available_models.keys())}")
+        log.info("[inference] Available models: %s", list(self.available_models.keys()))
 
     def list_available_models(self) -> List[str]:
         """
@@ -433,6 +471,11 @@ if _available_models:
         None,
     )
     inference_service.load_model(preferred_match or _available_models[0])
+else:
+    print(
+        "[inference] No models found at import time — "
+        "_ensure_models_available() will attempt Supabase download during lifespan startup."
+    )
 
 # Example of how to use the service (for testing purposes)
 if __name__ == '__main__':

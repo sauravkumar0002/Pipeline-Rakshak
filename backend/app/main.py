@@ -118,41 +118,65 @@ def create_db_and_tables():
 
 def _ensure_models_available() -> None:
     """
-    If no ONNX models were found at import time, attempt to download them from
-    the Supabase 'model-artifacts' bucket before inference is required.
+    Guarantee that at least one ONNX model is loaded before inference is required.
 
-    Strategy:
-      1. If inference_service already has models loaded → nothing to do.
-      2. If STORAGE_BACKEND is not 'supabase' → log and return (manual placement needed).
-      3. List 'model-artifacts' bucket; download every .onnx and .onnx.data file
-         into settings.MODEL_DIRECTORY.
-      4. Call inference_service.rescan_and_load_default() to hot-load the files.
+    Strategy
+    --------
+    1. If a model is already loaded (inference_session active) → done.
+    2. If models were discovered but none loaded → attempt to load default.
+    3. If no models anywhere and STORAGE_BACKEND=supabase → download from
+       the 'model-artifacts' bucket into settings.MODEL_DIRECTORY then
+       rescan and load.
+    4. If download fails for any individual file, skip it and continue.
+    5. All exceptions are caught — the application always starts.
 
-    All failures are caught and logged — the application will still start even if
-    models cannot be downloaded.
+    Startup log is verbose so failures are always diagnosable.
     """
-    if inference_service.available_models:
+    print("[startup] ─── ONNX Model Initialization ────────────────────────────────")
+    print(f"[startup] CWD              : {os.getcwd()}")
+    print(f"[startup] MODEL_DIRECTORY  : {settings.MODEL_DIRECTORY}")
+    print(f"[startup] Resolved         : {os.path.abspath(settings.MODEL_DIRECTORY)}")
+    print(f"[startup] DEFAULT_MODEL    : {settings.DEFAULT_MODEL}")
+    print(f"[startup] STORAGE_BACKEND  : {settings.STORAGE_BACKEND}")
+
+    # ── Case 1: model already loaded (fast path) ─────────────────────────────
+    if inference_service.active_model_name:
         print(
-            f"[startup] ONNX model(s) already loaded: "
-            f"{list(inference_service.available_models.keys())}"
+            f"[startup] Model already loaded: {inference_service.active_model_name} — nothing to do."
         )
         return
 
-    print("[startup] No ONNX models loaded at import-time.")
-    print(f"[startup] Model directory : {settings.MODEL_DIRECTORY}")
+    # ── Case 2: models were found at import time but load was skipped ─────────
+    if inference_service.available_models:
+        print(
+            f"[startup] Models discovered at import time but none loaded: "
+            f"{list(inference_service.available_models.keys())}"
+        )
+        print("[startup] Attempting to load default model...")
+        ok = inference_service.rescan_and_load_default()
+        if ok:
+            print(f"[startup] Loaded: {inference_service.active_model_name}")
+        else:
+            print("[startup] WARNING: load attempt failed — will try Supabase download next.")
+        if inference_service.active_model_name:
+            return
+
+    # ── Case 3: no local models → try Supabase download ──────────────────────
+    print("[startup] No local ONNX models found.")
 
     if not storage_service.is_supabase:
         print(
-            "[startup] STORAGE_BACKEND is not 'supabase' — cannot auto-download models.\n"
-            "[startup] Place .onnx model files in: "
+            "[startup] STORAGE_BACKEND is not 'supabase' — auto-download unavailable.\n"
+            f"[startup] Manually place .onnx + .onnx.data files in: "
             f"{os.path.abspath(settings.MODEL_DIRECTORY)}"
         )
         return
 
-    print("[startup] Attempting to download ONNX models from Supabase 'model-artifacts' bucket...")
-
+    print("[startup] Querying Supabase 'model-artifacts' bucket...")
     try:
         objects = storage_service.list_objects("model-artifacts")
+        print(f"[startup] Bucket objects ({len(objects)}): {objects}")
+
         onnx_objects = [
             o for o in objects
             if o.endswith(".onnx") or o.endswith(".onnx.data")
@@ -160,41 +184,108 @@ def _ensure_models_available() -> None:
 
         if not onnx_objects:
             print(
-                "[startup] WARNING: 'model-artifacts' bucket is empty or has no .onnx files.\n"
-                "[startup] Upload your model files to Supabase Storage → model-artifacts bucket\n"
-                "[startup] then redeploy. Inference will be unavailable until then."
+                "[startup] ERROR: 'model-artifacts' bucket has no .onnx files!\n"
+                "[startup] Upload trained models to Supabase Storage → model-artifacts bucket.\n"
+                "[startup] Required minimum: mobilenetv2_standard.onnx + mobilenetv2_standard.onnx.data\n"
+                "[startup] Inference will be UNAVAILABLE until models are uploaded and app restarts."
             )
             return
 
-        model_dir_path = Path(settings.MODEL_DIRECTORY)
-        model_dir_path.mkdir(parents=True, exist_ok=True)
+        # Use the absolute path to model dir so the target matches scan_for_models()
+        model_dir_abs = Path(os.path.abspath(settings.MODEL_DIRECTORY))
+        model_dir_abs.mkdir(parents=True, exist_ok=True)
+        print(f"[startup] Download target  : {model_dir_abs}")
 
-        for obj_name in onnx_objects:
-            local_path = model_dir_path / Path(obj_name).name
-            if local_path.exists():
-                print(f"[startup] Skipping {obj_name} — already present locally.")
+        # Sort: download .onnx before .onnx.data so the base file lands first
+        onnx_objects_sorted = sorted(
+            onnx_objects,
+            key=lambda n: (0 if n.endswith(".onnx") and not n.endswith(".onnx.data") else 1),
+        )
+
+        downloaded_count = 0
+        skipped_count = 0
+        failed_names: list[str] = []
+
+        for obj_name in onnx_objects_sorted:
+            filename = Path(obj_name).name
+            local_path = model_dir_abs / filename
+
+            if local_path.exists() and local_path.stat().st_size > 0:
+                size_mb = local_path.stat().st_size / (1024 * 1024)
+                print(f"[startup] Already present: {filename} ({size_mb:.1f} MB) — skipping.")
+                skipped_count += 1
                 continue
-            print(f"[startup] Downloading {obj_name} ...")
+
+            print(f"[startup] Downloading: {obj_name} ...")
             try:
                 file_bytes = storage_service.download_bytes("model-artifacts", obj_name)
+                if not file_bytes:
+                    print(f"[startup] ERROR: download returned empty bytes for {obj_name}")
+                    failed_names.append(filename)
+                    continue
+
                 local_path.write_bytes(file_bytes)
                 size_mb = len(file_bytes) / (1024 * 1024)
-                print(f"[startup] Downloaded {obj_name} → {local_path}  ({size_mb:.1f} MB)")
-            except Exception as dl_exc:
-                print(f"[startup] WARNING: Failed to download {obj_name}: {dl_exc}")
 
-        # Re-scan and load after downloads
+                # Verify the file was actually written
+                if not local_path.exists() or local_path.stat().st_size != len(file_bytes):
+                    print(f"[startup] ERROR: write verification failed for {local_path}")
+                    failed_names.append(filename)
+                    continue
+
+                print(
+                    f"[startup] Downloaded: {filename}  "
+                    f"({size_mb:.1f} MB)  →  {local_path}"
+                )
+                downloaded_count += 1
+
+            except Exception as dl_exc:
+                print(f"[startup] ERROR: Failed to download '{obj_name}': {dl_exc}")
+                failed_names.append(filename)
+
+        print(
+            f"[startup] Download summary: {downloaded_count} new, "
+            f"{skipped_count} already present, {len(failed_names)} failed"
+        )
+        if failed_names:
+            print(f"[startup] Failed files: {failed_names}")
+
+        total_available = downloaded_count + skipped_count
+        if total_available == 0:
+            print("[startup] ERROR: No ONNX files available after download attempt. Inference UNAVAILABLE.")
+            return
+
+        # List what is physically on disk before rescanning
+        try:
+            on_disk = sorted(f.name for f in model_dir_abs.iterdir())
+            print(f"[startup] Files on disk in {model_dir_abs}: {on_disk}")
+        except Exception:
+            pass
+
+        # Rescan all model directories and load the default model
+        print("[startup] Rescanning model directories and loading default model...")
         ok = inference_service.rescan_and_load_default()
         if ok:
             print(
-                f"[startup] Inference ready — active model: {inference_service.active_model_name}"
+                f"[startup] ✓ Inference READY — active model: {inference_service.active_model_name}"
             )
         else:
-            print("[startup] WARNING: Model download completed but load failed — check logs above.")
+            print(
+                "[startup] WARNING: Files are on disk but model load FAILED.\n"
+                "[startup] Check the ONNX Runtime error above (likely a corrupt download or\n"
+                "[startup] missing .onnx.data companion file)."
+            )
+            try:
+                on_disk2 = sorted(f.name for f in model_dir_abs.iterdir())
+                print(f"[startup] Current dir contents: {on_disk2}")
+            except Exception:
+                pass
 
     except Exception as exc:
-        print(f"[startup] WARNING: Model auto-download failed: {exc}")
-        print("[startup] Inference will be unavailable until models are placed manually.")
+        import traceback
+        print(f"[startup] CRITICAL: Unexpected error during model auto-download: {exc}")
+        traceback.print_exc()
+        print("[startup] Inference will be UNAVAILABLE. Fix the error above and redeploy.")
 
 
 # Create the FastAPI app instance

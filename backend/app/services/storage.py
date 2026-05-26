@@ -246,8 +246,20 @@ class StorageService:
 
     def _download_supabase(self, bucket: str, object_path: str) -> bytes:
         assert self._client is not None
-        data = self._client.storage.from_(bucket).download(object_path)
-        return bytes(data)
+        raw = self._client.storage.from_(bucket).download(object_path)
+        # supabase-py v1 returned list[int], v2 returns bytes/bytearray.
+        # Normalise to bytes regardless of SDK version.
+        if isinstance(raw, (bytes, bytearray)):
+            return bytes(raw)
+        if isinstance(raw, (list, tuple)):
+            return bytes(raw)
+        # Fallback for unexpected types
+        try:
+            return bytes(raw)
+        except Exception:
+            raise TypeError(
+                f"Unexpected type from Supabase download: {type(raw).__name__}"
+            )
 
     # ── local backend ─────────────────────────────────────────────────────────
 
