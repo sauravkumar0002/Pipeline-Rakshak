@@ -31,16 +31,13 @@ class Settings(BaseSettings):
 
     # CORS settings
     ALLOWED_ORIGINS: List[str] = Field(
-        default=[
-            "http://localhost",
-            "http://localhost:3000",
-            "http://localhost:5173",
-            "http://127.0.0.1:5173",
-            "http://localhost:5174",
-            "http://127.0.0.1:5174"
-        ],
-        description="List of allowed origins for CORS."
-    )
+    default=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://pipeline-rakshak-frontend.netlify.app",
+    ]
+)
 
     # API metadata
     PROJECT_NAME: str = "Pipeline Rakshak"
