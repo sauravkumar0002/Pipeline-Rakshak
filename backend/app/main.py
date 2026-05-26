@@ -1,5 +1,6 @@
 # backend/app/main.py
 
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -115,6 +116,87 @@ def create_db_and_tables():
     except Exception as e:
         print(f"Error creating database tables: {e}")
 
+def _ensure_models_available() -> None:
+    """
+    If no ONNX models were found at import time, attempt to download them from
+    the Supabase 'model-artifacts' bucket before inference is required.
+
+    Strategy:
+      1. If inference_service already has models loaded → nothing to do.
+      2. If STORAGE_BACKEND is not 'supabase' → log and return (manual placement needed).
+      3. List 'model-artifacts' bucket; download every .onnx and .onnx.data file
+         into settings.MODEL_DIRECTORY.
+      4. Call inference_service.rescan_and_load_default() to hot-load the files.
+
+    All failures are caught and logged — the application will still start even if
+    models cannot be downloaded.
+    """
+    if inference_service.available_models:
+        print(
+            f"[startup] ONNX model(s) already loaded: "
+            f"{list(inference_service.available_models.keys())}"
+        )
+        return
+
+    print("[startup] No ONNX models loaded at import-time.")
+    print(f"[startup] Model directory : {settings.MODEL_DIRECTORY}")
+
+    if not storage_service.is_supabase:
+        print(
+            "[startup] STORAGE_BACKEND is not 'supabase' — cannot auto-download models.\n"
+            "[startup] Place .onnx model files in: "
+            f"{os.path.abspath(settings.MODEL_DIRECTORY)}"
+        )
+        return
+
+    print("[startup] Attempting to download ONNX models from Supabase 'model-artifacts' bucket...")
+
+    try:
+        objects = storage_service.list_objects("model-artifacts")
+        onnx_objects = [
+            o for o in objects
+            if o.endswith(".onnx") or o.endswith(".onnx.data")
+        ]
+
+        if not onnx_objects:
+            print(
+                "[startup] WARNING: 'model-artifacts' bucket is empty or has no .onnx files.\n"
+                "[startup] Upload your model files to Supabase Storage → model-artifacts bucket\n"
+                "[startup] then redeploy. Inference will be unavailable until then."
+            )
+            return
+
+        model_dir_path = Path(settings.MODEL_DIRECTORY)
+        model_dir_path.mkdir(parents=True, exist_ok=True)
+
+        for obj_name in onnx_objects:
+            local_path = model_dir_path / Path(obj_name).name
+            if local_path.exists():
+                print(f"[startup] Skipping {obj_name} — already present locally.")
+                continue
+            print(f"[startup] Downloading {obj_name} ...")
+            try:
+                file_bytes = storage_service.download_bytes("model-artifacts", obj_name)
+                local_path.write_bytes(file_bytes)
+                size_mb = len(file_bytes) / (1024 * 1024)
+                print(f"[startup] Downloaded {obj_name} → {local_path}  ({size_mb:.1f} MB)")
+            except Exception as dl_exc:
+                print(f"[startup] WARNING: Failed to download {obj_name}: {dl_exc}")
+
+        # Re-scan and load after downloads
+        ok = inference_service.rescan_and_load_default()
+        if ok:
+            print(
+                f"[startup] Inference ready — active model: {inference_service.active_model_name}"
+            )
+        else:
+            print("[startup] WARNING: Model download completed but load failed — check logs above.")
+
+    except Exception as exc:
+        print(f"[startup] WARNING: Model auto-download failed: {exc}")
+        print("[startup] Inference will be unavailable until models are placed manually.")
+
+
 # Create the FastAPI app instance
 @asynccontextmanager
 async def lifespan(application: FastAPI):
@@ -154,6 +236,8 @@ async def lifespan(application: FastAPI):
         _db.close()
     # Run startup health checks (DB + Storage)
     _run_startup_checks()
+    # Auto-download ONNX models from Supabase if the model directory is empty
+    _ensure_models_available()
     yield
     print("Shutting down the application...")
 

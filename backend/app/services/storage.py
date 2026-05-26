@@ -150,6 +150,27 @@ class StorageService:
             return self._health_supabase()
         return {"ok": True, "detail": "local filesystem — no remote check needed"}
 
+    def list_objects(self, bucket: str, path: str = "") -> list[str]:
+        """
+        List all object names inside *bucket* under the given *path* prefix.
+
+        Returns a flat list of object-path strings (e.g. ["model.onnx", ...]).
+        Returns an empty list when the bucket/path cannot be read.
+        """
+        if self._backend == "supabase":
+            return self._list_supabase(bucket, path)
+        return self._list_local(bucket, path)
+
+    def download_bytes(self, bucket: str, object_path: str) -> bytes:
+        """
+        Download *object_path* from *bucket* and return raw bytes.
+
+        Raises FileNotFoundError for the local backend when the file is absent.
+        """
+        if self._backend == "supabase":
+            return self._download_supabase(bucket, object_path)
+        return self._download_local(bucket, object_path)
+
     @property
     def is_supabase(self) -> bool:
         return self._backend == "supabase"
@@ -208,6 +229,26 @@ class StorageService:
         except Exception as exc:
             return {"ok": False, "detail": f"Supabase Storage unreachable: {exc}"}
 
+    def _list_supabase(self, bucket: str, path: str) -> list[str]:
+        """Return object names in a Supabase bucket under *path*."""
+        assert self._client is not None
+        try:
+            items = self._client.storage.from_(bucket).list(path or "")
+            names = []
+            for item in items:
+                name = item.get("name") if isinstance(item, dict) else getattr(item, "name", None)
+                if name:
+                    names.append(f"{path}/{name}" if path else name)
+            return names
+        except Exception as exc:
+            log.warning("[storage] Supabase list failed [%s/%s]: %s", bucket, path, exc)
+            return []
+
+    def _download_supabase(self, bucket: str, object_path: str) -> bytes:
+        assert self._client is not None
+        data = self._client.storage.from_(bucket).download(object_path)
+        return bytes(data)
+
     # ── local backend ─────────────────────────────────────────────────────────
 
     def _upload_local(self, bucket: str, object_path: str, file_bytes: bytes) -> str:
@@ -225,6 +266,20 @@ class StorageService:
                 p.unlink()
         except Exception as exc:
             log.warning("[storage] Local delete failed [%s]: %s", path, exc)
+
+    def _list_local(self, bucket: str, path: str) -> list[str]:
+        local_dir = _BUCKET_TO_LOCAL_DIR.get(bucket, self._upload_dir)
+        search_dir = Path(local_dir) / path if path else Path(local_dir)
+        if not search_dir.exists():
+            return []
+        return [p.name for p in search_dir.iterdir() if p.is_file()]
+
+    def _download_local(self, bucket: str, object_path: str) -> bytes:
+        local_dir = _BUCKET_TO_LOCAL_DIR.get(bucket, self._upload_dir)
+        local_path = Path(local_dir) / object_path
+        if not local_path.exists():
+            raise FileNotFoundError(f"Local file not found: {local_path}")
+        return local_path.read_bytes()
 
 
 # ---------------------------------------------------------------------------

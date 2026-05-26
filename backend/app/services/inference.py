@@ -193,22 +193,50 @@ class ONNXInferenceService:
         """
         Scans the model directory for .onnx files and populates the list of available models.
         """
-        log.info(f"Scanning for models in directory: {self.model_dir}")
+        import sys
+        resolved_dir = os.path.abspath(self.model_dir)
+        log.info("[inference] CWD            : %s", os.getcwd())
+        log.info("[inference] Model directory : %s  (resolved → %s)", self.model_dir, resolved_dir)
+        print(f"[inference] CWD            : {os.getcwd()}")
+        print(f"[inference] Model directory : {self.model_dir}  (resolved → {resolved_dir})")
+
         if not os.path.isdir(self.model_dir):
-            log.warning(f"Model directory not found: {self.model_dir}. No models will be loaded.")
+            log.warning(
+                "[inference] Model directory not found: %s — no models loaded. "
+                "The directory will be created at startup; models can be added later "
+                "via Supabase Storage auto-download or the /models/select API.",
+                resolved_dir,
+            )
+            print(f"[inference] WARNING: model directory does not exist yet: {resolved_dir}")
             return
 
-        for filename in os.listdir(self.model_dir):
-            if filename.endswith(".onnx"):
-                model_name = os.path.splitext(filename)[0]
-                model_path = os.path.join(self.model_dir, filename)
-                self.available_models[model_name] = model_path
-                log.info(f"Found ONNX model: {model_name} at {model_path}")
-        
-        if not self.available_models:
-            log.warning("No ONNX models found in the specified directory.")
-        else:
-            log.info(f"Available models: {list(self.available_models.keys())}")
+        self.available_models = {}
+        onnx_files = [f for f in os.listdir(self.model_dir) if f.endswith(".onnx")]
+
+        if not onnx_files:
+            log.warning(
+                "[inference] No .onnx files found in %s — inference is not yet available. "
+                "Upload models to the 'model-artifacts' Supabase bucket and they will be "
+                "downloaded automatically on next restart.",
+                resolved_dir,
+            )
+            print(f"[inference] WARNING: No .onnx files in {resolved_dir}")
+            return
+
+        for filename in onnx_files:
+            model_name = os.path.splitext(filename)[0]
+            model_path = os.path.join(self.model_dir, filename)
+            self.available_models[model_name] = model_path
+            data_file = model_path + ".data"
+            has_data = os.path.exists(data_file)
+            log.info(
+                "[inference] Found ONNX model: %s at %s (external data: %s)",
+                model_name, model_path, has_data,
+            )
+            print(f"[inference] Found model: {model_name}  ({model_path})")
+
+        log.info("[inference] Available models: %s", list(self.available_models.keys()))
+        print(f"[inference] Available models: {list(self.available_models.keys())}")
 
     def list_available_models(self) -> List[str]:
         """
@@ -360,8 +388,37 @@ class ONNXInferenceService:
             log.error(f"An error occurred during prediction: {e}", exc_info=True)
             return {"error": f"Prediction failed with an internal error: {e}"}
 
+    def rescan_and_load_default(self) -> bool:
+        """
+        Re-scan the model directory and attempt to load the default model from settings.
+
+        Intended to be called after new model files have been written to disk
+        (e.g. after Supabase model download at startup).
+
+        Returns True if a model was loaded successfully, False otherwise.
+        """
+        self.scan_for_models()
+        if not self.available_models:
+            log.warning("[inference] rescan found no models — inference still unavailable.")
+            return False
+
+        preferred_stem = os.path.splitext(os.path.basename(settings.DEFAULT_MODEL))[0].lower()
+        preferred_match = next(
+            (m for m in self.available_models if self._normalize_model_name(m) == preferred_stem),
+            None,
+        )
+        target = preferred_match or list(self.available_models.keys())[0]
+        ok = self.load_model(target)
+        if ok:
+            log.info("[inference] Default model loaded after rescan: %s", target)
+        else:
+            log.error("[inference] Failed to load model '%s' after rescan.", target)
+        return ok
+
+
 # Create a module-level singleton for application-wide use.
-inference_service = ONNXInferenceService()
+# model_dir reads from settings so render.yaml / .env overrides are respected.
+inference_service = ONNXInferenceService(model_dir=settings.MODEL_DIRECTORY)
 
 # Automatically load the first available model if any exist.
 _available_models = inference_service.list_available_models()

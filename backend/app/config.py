@@ -17,8 +17,8 @@ class Settings(BaseSettings):
 
     # Directory settings
     MODEL_DIRECTORY: str = Field(
-        "models/onnx",
-        description="Directory where ONNX models are stored."
+        "backend/models/onnx",
+        description="Directory where ONNX models are stored, relative to the project root (CWD)."
     )
     UPLOAD_DIRECTORY: str = Field(
         "uploads",
